@@ -1,11 +1,11 @@
-using UnityEngine;
-using System;
 using System.Collections.Generic;
-using Unity.Properties;
+using UnityEngine;
 
-public class AssesmentManager_script : MonoBehaviour
+public class AssessmentManager_script : MonoBehaviour
 {
-    public AssesmentData assesmentData;
+    [SerializeField] private AssessmentCsvLoader csvLoader;
+
+    public AssesmentData assessmentData { get; private set; }
 
     public AssesmentResponses managerResponses;
     public AssesmentResponses bossResponses;
@@ -13,48 +13,74 @@ public class AssesmentManager_script : MonoBehaviour
     public const string ManagerRole = "Manager";
     public const string BossRole = "Boss";
 
+    public bool IsInitialized { get; private set; }
 
-    public void InitialAssesment(string assesmentID) // Prepara los registros de los participantes
+    public void InitializeAssessment(string assessmentID)
     {
-        if (assesmentData == null || assesmentData.topics == null)
+        IsInitialized = false;
+
+        if (csvLoader == null)
         {
-            Debug.LogError("Assesment data no asignado");
+            Debug.LogError("No se ha asignado AssessmentCsvLoader.");
             return;
         }
 
-        managerResponses = CreateResponses(assesmentID, ManagerRole);
+        assessmentData = csvLoader.LoadAssessment();
 
-        bossResponses = CreateResponses(assesmentID, BossRole);
+        if (assessmentData == null)
+            return;
+
+        managerResponses = CreateResponses(
+            assessmentID, ManagerRole);
+
+        bossResponses = CreateResponses(
+            assessmentID, BossRole);
+
+        IsInitialized = true;
+
+        Debug.Log("AssessmentManager inicializado correctamente.");
     }
 
-    private AssesmentResponses CreateResponses(string assesmentID, string role)
+    private AssesmentResponses CreateResponses(
+        string assessmentID, string role)
     {
         return new AssesmentResponses
         {
-            assesmentID = assesmentID,
+            assesmentID = assessmentID,
             participantRole = role,
             responses = new List<QuestionResponses>(),
             isSubmitted = false
         };
     }
 
-    public bool RegisteredAnswer(string role, string questionID, int score, string evidence = "") // Guarda las respuestas de las preguntas
+    public bool RegisterAnswer(
+        string role,
+        string questionID,
+        int score,
+        string evidence = "")
     {
+        if (!IsInitialized)
+            return false;
+
         AssesmentResponses participant = GetResponses(role);
 
-        if(participant == null || participant.isSubmitted)
-        {
+        if (participant == null || participant.isSubmitted)
             return false;
-        }
+
         if (score < 1 || score > 5)
         {
+            Debug.LogWarning("La puntuación debe estar entre 1 y 5.");
             return false;
         }
-        if (!QuestionExist(questionID))
+
+        if (!QuestionExists(questionID))
         {
+            Debug.LogWarning("Pregunta desconocida: " + questionID);
             return false;
         }
-        QuestionResponses answer = participant.responses.Find(r => r.questionID == questionID);
+
+        QuestionResponses answer = participant.responses.Find(
+            r => r.questionID == questionID);
 
         if (answer == null)
         {
@@ -62,6 +88,7 @@ public class AssesmentManager_script : MonoBehaviour
             {
                 questionID = questionID
             };
+
             participant.responses.Add(answer);
         }
 
@@ -71,7 +98,7 @@ public class AssesmentManager_script : MonoBehaviour
         return true;
     }
 
-    public int GetAnsweredCount(string role) //Sabe cuantas preguntas tiene el participante
+    public int GetAnsweredCount(string role)
     {
         AssesmentResponses participant = GetResponses(role);
 
@@ -80,48 +107,47 @@ public class AssesmentManager_script : MonoBehaviour
             : participant.responses.Count;
     }
 
-    public int GetTotalQuestionCount() //Sabe cuantas preguntas existen en los temas
+    public int GetTotalQuestionCount()
     {
+        if (assessmentData == null)
+            return 0;
+
         int total = 0;
 
-        if (assesmentData == null || assesmentData.topics == null)
-        {
-            return 0;
-        }
-
-        foreach (AssesmentTopic topic in assesmentData.topics)
-        {
-            if(topic.question != null)
-            {
-                total += topic.question.Count;
-            }
-        }
+        foreach (AssesmentTopic topic in assessmentData.topics)
+            total += topic.question.Count;
 
         return total;
     }
 
-    public bool TrySubmitAssesment(string role) //Evita que se suba una encuesta si no ha respondido tadas las preguntas
+    public bool TrySubmitAssessment(string role)
     {
+        if (!IsInitialized)
+            return false;
+
         AssesmentResponses participant = GetResponses(role);
 
         if (participant == null || participant.isSubmitted)
-        {
             return false;
-        }
 
         int total = GetTotalQuestionCount();
 
         if (total == 0 || participant.responses.Count != total)
         {
+            Debug.LogWarning(
+                "No se puede enviar: faltan respuestas.");
+
             return false;
         }
 
         participant.isSubmitted = true;
 
+        Debug.Log("Evaluación enviada para: " + role);
+
         return true;
     }
 
-    private AssesmentResponses GetResponses(string role)//Da el registro correcto del participante
+    private AssesmentResponses GetResponses(string role)
     {
         if (role == ManagerRole)
             return managerResponses;
@@ -132,16 +158,13 @@ public class AssesmentManager_script : MonoBehaviour
         return null;
     }
 
-    public bool QuestionExist(string questionID)
+    private bool QuestionExists(string questionID)
     {
-        if (assesmentData == null || assesmentData.topics == null)
+        if (assessmentData == null)
             return false;
 
-        foreach (AssesmentTopic topic in assesmentData.topics)
+        foreach (AssesmentTopic topic in assessmentData.topics)
         {
-            if (topic.question == null)
-                continue;
-
             foreach (AssesmentQuestion question in topic.question)
             {
                 if (question.id == questionID)
@@ -150,5 +173,11 @@ public class AssesmentManager_script : MonoBehaviour
         }
 
         return false;
+    }
+
+    [ContextMenu("Test Assessment Loading")]
+    private void TestAssessmentLoading()
+    {
+        InitializeAssessment("ASSESSMENT_TEST_001");
     }
 }
