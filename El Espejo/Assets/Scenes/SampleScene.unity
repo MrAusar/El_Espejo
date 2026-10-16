@@ -371,6 +371,7 @@ GameObject:
   - component: {fileID: 2109798398}
   - component: {fileID: 2109798400}
   - component: {fileID: 2109798399}
+  - component: {fileID: 2109798401}
   m_Layer: 0
   m_Name: AssessmentSystem
   m_TagString: Untagged
@@ -407,17 +408,404 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AssessmentManager_script
   csvLoader: {fileID: 2109798400}
   managerResponses:
-    assesmentID: ASSESSMENT_TEST_001
+    assesmentID: ASSESSMENT_COMPARISON_TEST
     participantRole: Manager
     responses:
-    - questionID: 
+    - questionID: P01_Q01
       score: 4
-      evidence: 
+      evidence: "Organic\xE9 las tareas del equipo y revis\xE9 los resultados."
+    - questionID: P01_Q02
+      score: 2
+      evidence: "Necesito mejorar la comunicaci\xF3n con mi equipo."
+    - questionID: P01_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P01_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P01_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P02_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P02_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P02_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P02_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P02_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P03_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P03_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P03_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P03_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P03_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P04_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P04_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P04_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P04_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P04_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P05_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P05_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P05_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P05_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P05_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P06_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P06_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P06_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P06_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P06_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P07_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P07_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P07_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P07_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P07_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P08_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P08_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P08_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P08_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P08_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P09_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P09_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P09_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P09_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P09_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P10_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P10_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P10_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P10_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P10_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P11_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P11_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P11_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P11_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P11_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P12_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P12_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P12_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P12_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P12_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P13_Q01
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P13_Q02
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P13_Q03
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P13_Q04
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
+    - questionID: P13_Q05
+      score: 4
+      evidence: "Ejemplo de evidencia v\xE1lida del gerente."
     isSubmitted: 0
   bossResponses:
-    assesmentID: ASSESSMENT_TEST_001
+    assesmentID: ASSESSMENT_COMPARISON_TEST
     participantRole: Boss
-    responses: []
+    responses:
+    - questionID: P01_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P01_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P01_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P01_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P01_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P02_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P02_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P02_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P02_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P02_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P03_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P03_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P03_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P03_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P03_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P04_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P04_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P04_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P04_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P04_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P05_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P05_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P05_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P05_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P05_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P06_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P06_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P06_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P06_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P06_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P07_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P07_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P07_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P07_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P07_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P08_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P08_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P08_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P08_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P08_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P09_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P09_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P09_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P09_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P09_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P10_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P10_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P10_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P10_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P10_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P11_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P11_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P11_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P11_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P11_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P12_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P12_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P12_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P12_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P12_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P13_Q01
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P13_Q02
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P13_Q03
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P13_Q04
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
+    - questionID: P13_Q05
+      score: 3
+      evidence: "Ejemplo de evidencia v\xE1lida del jefe."
     isSubmitted: 0
 --- !u!114 &2109798400
 MonoBehaviour:
@@ -432,6 +820,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AssessmentCsvLoader
   csvFile: {fileID: 4900000, guid: 08126c24a55eae2438b608b7b800f245, type: 3}
+--- !u!114 &2109798401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2109798397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9cf7e6f55db1a643aa4195c20887450, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AssessmentNavigation
+  assessmentManager: {fileID: 2109798399}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
