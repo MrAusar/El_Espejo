@@ -30,11 +30,45 @@ public class AssessmentManager_script : MonoBehaviour
         if (assessmentData == null)
             return;
 
-        managerResponses = CreateResponses(
-            assessmentID, ManagerRole);
+        managerResponses = AssessmentLocalStorage.Load(
+    assessmentID,
+    ManagerRole
+);
 
-        bossResponses = CreateResponses(
-            assessmentID, BossRole);
+        bossResponses = AssessmentLocalStorage.Load(
+            assessmentID,
+            BossRole
+        );
+
+        // Crear una evaluación nueva si no hay datos guardados válidos.
+        if (managerResponses == null ||
+            managerResponses.assesmentID != assessmentID ||
+            managerResponses.participantRole != ManagerRole)
+        {
+            managerResponses = new AssesmentResponses
+            {
+                assesmentID = assessmentID,
+                participantRole = ManagerRole
+            };
+        }
+
+        if (bossResponses == null ||
+            bossResponses.assesmentID != assessmentID ||
+            bossResponses.participantRole != BossRole)
+        {
+            bossResponses = new AssesmentResponses
+            {
+                assesmentID = assessmentID,
+                participantRole = BossRole
+            };
+        }
+
+        // Protegernos ante una lista de respuestas inexistente.
+        if (managerResponses.responses == null)
+            managerResponses.responses = new List<QuestionResponses>();
+
+        if (bossResponses.responses == null)
+            bossResponses.responses = new List<QuestionResponses>();
 
         IsInitialized = true;
 
@@ -99,6 +133,11 @@ public class AssessmentManager_script : MonoBehaviour
 
         answer.score = score;
         answer.evidence = cleanEvidence;
+
+        if (!AssessmentLocalStorage.Save(participant))
+        {
+            Debug.LogWarning("La respuesta se registró en memoria, " + "pero no se pudo guardar en disco.");
+        }
 
         return true;
     }
@@ -337,9 +376,7 @@ public class AssessmentManager_script : MonoBehaviour
         if (totalQuestions == 0 ||
             participant.responses.Count != totalQuestions)
         {
-            Debug.LogWarning(
-                "No se puede enviar: faltan respuestas."
-            );
+            Debug.LogWarning("No se puede enviar: faltan respuestas.");
             return false;
         }
 
@@ -347,19 +384,13 @@ public class AssessmentManager_script : MonoBehaviour
         {
             if (!QuestionExists(response.questionID))
             {
-                Debug.LogWarning(
-                    "No se puede enviar: pregunta desconocida " +
-                    response.questionID
-                );
+                Debug.LogWarning("No se puede enviar: pregunta desconocida " +response.questionID );
                 return false;
             }
 
             if (response.score < 1 || response.score > 5)
             {
-                Debug.LogWarning(
-                    "No se puede enviar: puntuación inválida en " +
-                    response.questionID
-                );
+                Debug.LogWarning("No se puede enviar: puntuación inválida en " +response.questionID);
                 return false;
             }
 
@@ -378,6 +409,15 @@ public class AssessmentManager_script : MonoBehaviour
         }
 
         participant.isSubmitted = true;
+
+        if (!AssessmentLocalStorage.Save(participant))
+        {
+            participant.isSubmitted = false;
+
+            Debug.LogError("No se pudo guardar la evaluación enviada. " + "La evaluación no se marcará como completada.");
+
+            return false;
+        }
 
         Debug.Log("Evaluación enviada correctamente para: " + role);
 

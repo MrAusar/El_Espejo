@@ -14,13 +14,20 @@ public class AssessmentUI : MonoBehaviour
     [SerializeField] private TMP_Text questionText;
     [SerializeField] private TMP_Text feedbackText;
 
+    [Header("Progreso")]
+    [SerializeField] private Slider progressBar;
+    [SerializeField] private TMP_Text completionPercentageText;
+
     [Header("Respuestas")]
     [SerializeField] private Toggle[] scoreToggles;
+    [SerializeField] private TMP_Text scoreLabel;
     [SerializeField] private TMP_InputField evidenceInput;
 
     [Header("Navegación")]
     [SerializeField] private Button previousButton;
     [SerializeField] private Button nextButton;
+    [SerializeField] private TMP_Text nextButtonText;
+
 
     private void Start()
     {
@@ -38,7 +45,7 @@ public class AssessmentUI : MonoBehaviour
         }
 
         // Iniciar una evaluación de prueba para el gerente.
-        bool started = navigation.StartNavigation(AssessmentManager_script.ManagerRole,"ASSESSMENT_LOCAL_TEST");
+        bool started = navigation.StartNavigation(AssessmentManager_script.ManagerRole, "ASSESSMENT_STORAGE_TEST_01");
 
         if (!started)
         {
@@ -49,29 +56,40 @@ public class AssessmentUI : MonoBehaviour
         RefreshUI();
     }
 
+
     private void OnScoreChanged(int score, bool isOn)
     {
+        // Solo reaccionar cuando una opción queda seleccionada.
         if (!isOn)
             return;
 
         navigation.SetCurrentAnswer(score, evidenceInput.text);
+
+        scoreLabel.text = $"Calificación seleccionada: {score}";
+
         ShowFeedback("");
     }
+
 
     private void OnNextClicked()
     {
         SaveCurrentInput();
 
-        // Si estamos en la última pregunta, guardarla sin avanzar.
-        if (navigation.CurrentQuestionNumber == navigation.TotalQuestions)
+        bool isLastQuestion =
+            navigation.CurrentQuestionNumber == navigation.TotalQuestions;
+
+        if (isLastQuestion)
         {
-            if (navigation.SaveCurrentAnswer())
+            if (navigation.TrySubmitCurrentAssessment())
             {
-                ShowFeedback("Última respuesta guardada. Ya puedes finalizar la evaluación en el siguiente paso.");
+                ShowFeedback("¡Evaluación completada y enviada correctamente!");
+
+                nextButton.interactable = false;
+                previousButton.interactable = false;
             }
             else
             {
-                ShowFeedback("Selecciona una calificación y escribe evidencia de al menos 20 caracteres.");
+                ShowFeedback("No se pudo finalizar. Verifica la puntuación, " + "la evidencia y que las 65 preguntas estén respondidas.");
             }
 
             return;
@@ -83,9 +101,10 @@ public class AssessmentUI : MonoBehaviour
         }
         else
         {
-            ShowFeedback("No se pudo avanzar. Revisa la calificación y la evidencia.");
+            ShowFeedback( "No se pudo avanzar. Verifica la puntuación y la evidencia.");
         }
     }
+
 
     private void OnPreviousClicked()
     {
@@ -117,6 +136,7 @@ public class AssessmentUI : MonoBehaviour
         navigation.SetCurrentAnswer(selectedScore,evidenceInput.text);
     }
 
+
     private void RefreshUI()
     {
         AssesmentTopic topic = navigation.CurrentTopic;
@@ -133,21 +153,44 @@ public class AssessmentUI : MonoBehaviour
 
         progressText.text = $"Pregunta {navigation.CurrentQuestionNumber} de {navigation.TotalQuestions}";
 
-        // Recuperar la respuesta guardada de esta pregunta.
+        progressBar.minValue = 0;
+        progressBar.maxValue = navigation.TotalQuestions;
+        progressBar.value = navigation.CurrentQuestionNumber;
+
+        float percentage = navigation.GetCompletionPercentage();
+
+        completionPercentageText.text = $"{percentage:0.#}% completado";
+
+        // Primero restaurar la evidencia de la pregunta actual.
+        evidenceInput.SetTextWithoutNotify(navigation.CurrentEvidence);
+
+        // Restaurar las puntuaciones sin disparar OnScoreChanged.
         for (int i = 0; i < scoreToggles.Length; i++)
         {
-            scoreToggles[i].isOn =
-                navigation.CurrentScore == i + 1;
+            scoreToggles[i].SetIsOnWithoutNotify(
+                navigation.CurrentScore == i + 1
+            );
         }
 
-        evidenceInput.text = navigation.CurrentEvidence;
+        // Actualizar el texto de la puntuación.
+        scoreLabel.text = navigation.CurrentScore > 0
+            ? $"Calificación seleccionada: {navigation.CurrentScore}"
+            : "Selecciona una calificación del 1 al 5";
 
         previousButton.interactable = navigation.CurrentQuestionNumber > 1;
 
         nextButton.interactable = true;
 
+        bool isLastQuestion =
+    navigation.CurrentQuestionNumber == navigation.TotalQuestions;
+
+        nextButtonText.text = isLastQuestion
+            ? "Finalizar evaluación"
+            : "Siguiente";
+
         ShowFeedback("");
     }
+
 
     private void ShowFeedback(string message)
     {

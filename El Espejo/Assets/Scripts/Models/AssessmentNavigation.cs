@@ -267,6 +267,28 @@ public class AssessmentNavigation : MonoBehaviour
         );
     }
 
+    public float GetCompletionPercentage()
+    {
+        if (!IsNavigationStarted || assessmentManager == null)
+            return 0f;
+
+        return assessmentManager.GetProgressPercentage(currentRole);
+    }
+
+
+    public bool TrySubmitCurrentAssessment()
+    {
+        if (!IsNavigationStarted)
+            return false;
+
+        // Guardar y validar la respuesta actual.
+        if (!SaveCurrentAnswer())
+            return false;
+
+        // Validar todas las respuestas y marcar la evaluación como enviada.
+        return assessmentManager.TrySubmitAssessment(currentRole);
+    }
+
 
     [ContextMenu("Test Navigation")]
     private void TestNavigation()
