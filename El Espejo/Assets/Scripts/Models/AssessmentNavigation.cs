@@ -289,6 +289,18 @@ public class AssessmentNavigation : MonoBehaviour
         return assessmentManager.TrySubmitAssessment(currentRole);
     }
 
+    public bool CurrentRoleIsSubmitted()
+    {
+        if (!IsNavigationStarted || assessmentManager == null)
+            return false;
+
+        AssesmentResponses participant =
+            currentRole == AssessmentManager_script.ManagerRole
+                ? assessmentManager.managerResponses
+                : assessmentManager.bossResponses;
+
+        return participant != null && participant.isSubmitted;
+    }
 
     [ContextMenu("Test Navigation")]
     private void TestNavigation()

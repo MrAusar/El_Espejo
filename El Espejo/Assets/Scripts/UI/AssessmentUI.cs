@@ -17,6 +17,7 @@ public class AssessmentUI : MonoBehaviour
     [Header("Progreso")]
     [SerializeField] private Slider progressBar;
     [SerializeField] private TMP_Text completionPercentageText;
+    [SerializeField] private string idTemporal;
 
     [Header("Respuestas")]
     [SerializeField] private Toggle[] scoreToggles;
@@ -28,6 +29,9 @@ public class AssessmentUI : MonoBehaviour
     [SerializeField] private Button nextButton;
     [SerializeField] private TMP_Text nextButtonText;
 
+    [Header("Pantalla de finalización")]
+    [SerializeField] private GameObject completionPanel;
+    [SerializeField] private GameObject assessmentPanel;
 
     private void Start()
     {
@@ -39,13 +43,17 @@ public class AssessmentUI : MonoBehaviour
         for (int i = 0; i < scoreToggles.Length; i++)
         {
             int score = i + 1;
-            scoreToggles[i].onValueChanged.AddListener(
-                isOn => OnScoreChanged(score, isOn)
-            );
+            scoreToggles[i].onValueChanged.AddListener(isOn => OnScoreChanged(score, isOn));
         }
 
         // Iniciar una evaluación de prueba para el gerente.
-        bool started = navigation.StartNavigation(AssessmentManager_script.ManagerRole, "ASSESSMENT_STORAGE_TEST_01");
+        bool started = navigation.StartNavigation(AssessmentManager_script.ManagerRole, idTemporal);
+
+        if (navigation.CurrentRoleIsSubmitted())
+        {
+            assessmentPanel.SetActive(false);
+            completionPanel.SetActive(true);
+        }
 
         if (!started)
         {
@@ -82,10 +90,8 @@ public class AssessmentUI : MonoBehaviour
         {
             if (navigation.TrySubmitCurrentAssessment())
             {
-                ShowFeedback("¡Evaluación completada y enviada correctamente!");
-
-                nextButton.interactable = false;
-                previousButton.interactable = false;
+                assessmentPanel.SetActive(false);
+                completionPanel.SetActive(true);
             }
             else
             {
