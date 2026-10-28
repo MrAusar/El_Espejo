@@ -33,6 +33,15 @@ public class AssessmentUI : MonoBehaviour
     [SerializeField] private GameObject completionPanel;
     [SerializeField] private GameObject assessmentPanel;
 
+    [Header("Participante")]
+    [SerializeField]
+    private ParticipantRoleMode participantRole = ParticipantRoleMode.Manager;
+
+    public enum ParticipantRoleMode
+    {
+        Manager,
+        Boss
+    }
     private void Start()
     {
         // Conectar los botones.
@@ -48,6 +57,14 @@ public class AssessmentUI : MonoBehaviour
 
         // Iniciar una evaluación de prueba para el gerente.
         bool started = navigation.StartNavigation(AssessmentManager_script.ManagerRole, idTemporal);
+
+        string role = participantRole == ParticipantRoleMode.Manager
+            ? AssessmentManager_script.ManagerRole
+            : AssessmentManager_script.BossRole;
+
+        navigation.StartNavigation(role, idTemporal);
+
+
 
         if (navigation.CurrentRoleIsSubmitted())
         {

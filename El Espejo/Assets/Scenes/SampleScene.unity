@@ -3224,6 +3224,7 @@ MonoBehaviour:
   nextButtonText: {fileID: 389189929}
   completionPanel: {fileID: 48473700}
   assessmentPanel: {fileID: 1672743482}
+  participantRole: 1
 --- !u!1 &1677941525
 GameObject:
   m_ObjectHideFlags: 0

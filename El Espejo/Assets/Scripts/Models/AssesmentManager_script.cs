@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static AssessmentManager_script;
 
 public class AssessmentManager_script : MonoBehaviour
 {
@@ -14,6 +15,53 @@ public class AssessmentManager_script : MonoBehaviour
     public const string BossRole = "Boss";
 
     public bool IsInitialized { get; private set; }
+
+
+    public enum PerceptionAlignment
+    {
+        BossRatesHigher,
+        Aligned,
+        ManagerRatesHigher
+    }
+
+    public enum RequiredLevelStatus
+    {
+        SharedOpportunity,
+        ManagerOpportunity,
+        BossOpportunity,
+        BothMeetRequiredLevel
+    }
+
+    [System.Serializable]
+    public class TopicAssessmentResult
+    {
+        public string topicID;
+        public string topicTitle;
+        public float average;
+        public float requiredLevel;
+        public float difference;
+    }
+
+    [System.Serializable]
+    public class TopicComparisonResult
+    {
+        public string topicID;
+        public string topicTitle;
+
+        public float managerAverage;
+        public float bossAverage;
+        public float requiredLevel;
+
+        // Promedio menos nivel requerido.
+        public float managerDifference;
+        public float bossDifference;
+
+        // Autoevaluación menos evaluación del jefe.
+        public float perceptionDifference;
+
+        public PerceptionAlignment perceptionAlignment;
+        public RequiredLevelStatus requiredLevelStatus;
+    }
 
     public void InitializeAssessment(string assessmentID)
     {
@@ -30,20 +78,12 @@ public class AssessmentManager_script : MonoBehaviour
         if (assessmentData == null)
             return;
 
-        managerResponses = AssessmentLocalStorage.Load(
-    assessmentID,
-    ManagerRole
-);
+        managerResponses = AssessmentLocalStorage.Load(assessmentID,ManagerRole);
 
-        bossResponses = AssessmentLocalStorage.Load(
-            assessmentID,
-            BossRole
-        );
+        bossResponses = AssessmentLocalStorage.Load(assessmentID,BossRole);
 
         // Crear una evaluación nueva si no hay datos guardados válidos.
-        if (managerResponses == null ||
-            managerResponses.assesmentID != assessmentID ||
-            managerResponses.participantRole != ManagerRole)
+        if (managerResponses == null || managerResponses.assesmentID != assessmentID || managerResponses.participantRole != ManagerRole)
         {
             managerResponses = new AssesmentResponses
             {
@@ -175,6 +215,7 @@ public class AssessmentManager_script : MonoBehaviour
         requiredLevel = 0f;
         difference = 0f;
 
+
         if (!IsInitialized || assessmentData == null)
             return false;
 
@@ -218,6 +259,7 @@ public class AssessmentManager_script : MonoBehaviour
         average = totalScore / selectedTopic.question.Count;
         requiredLevel = selectedTopic.requiredLevel;
         difference = average - requiredLevel;
+
 
         return true;
     }
@@ -277,41 +319,37 @@ public class AssessmentManager_script : MonoBehaviour
         if (!IsInitialized)
             return false;
 
-        // Obtener resultados completos de ambos participantes.
-        if (!TryGetAllTopicResults(
-                ManagerRole,
-                out List<TopicAssessmentResult> managerResults))
+
+        if (!AreBothAssessmentsSubmitted())
         {
-            Debug.LogWarning(
-                "No se puede comparar: faltan respuestas del gerente."
-            );
+            Debug.LogWarning("No se puede comparar: ambas evaluaciones " + "deben estar finalizadas y enviadas.");
+
             return false;
         }
 
-        if (!TryGetAllTopicResults(
-                BossRole,
-                out List<TopicAssessmentResult> bossResults))
+
+        // Obtener resultados completos de ambos participantes.
+        if (!TryGetAllTopicResults(ManagerRole,out List<TopicAssessmentResult> managerResults))
         {
-            Debug.LogWarning(
-                "No se puede comparar: faltan respuestas del jefe."
-            );
+            Debug.LogWarning("No se puede comparar: faltan respuestas del gerente.");
+            return false;
+        }
+
+        if (!TryGetAllTopicResults(BossRole, out List<TopicAssessmentResult> bossResults))
+        {
+            Debug.LogWarning("No se puede comparar: faltan respuestas del jefe.");
             return false;
         }
 
         foreach (TopicAssessmentResult managerResult in managerResults)
         {
-            TopicAssessmentResult bossResult = bossResults.Find(
-                result => result.topicID == managerResult.topicID
-            );
+            TopicAssessmentResult bossResult = bossResults.Find(result => result.topicID == managerResult.topicID);
 
             if (bossResult == null)
             {
                 comparisons.Clear();
 
-                Debug.LogWarning(
-                    "No se encontró la competencia correspondiente: " +
-                    managerResult.topicID
-                );
+                Debug.LogWarning("No se encontró la competencia correspondiente: " +managerResult.topicID);
 
                 return false;
             }
@@ -325,22 +363,21 @@ public class AssessmentManager_script : MonoBehaviour
                 bossAverage = bossResult.average,
                 requiredLevel = managerResult.requiredLevel,
 
-                managerDifference =
-                    managerResult.average - managerResult.requiredLevel,
+                managerDifference = managerResult.average - managerResult.requiredLevel,
 
-                bossDifference =
-                    bossResult.average - bossResult.requiredLevel,
+                bossDifference = bossResult.average - bossResult.requiredLevel,
 
-                perceptionDifference =
-                    managerResult.average - bossResult.average
+                perceptionDifference = managerResult.average - bossResult.average
+
             };
+
+            ClassifyComparison(comparison);
 
             comparisons.Add(comparison);
         }
 
         return true;
     }
-
 
     public int GetTotalQuestionCount()
     {
@@ -451,6 +488,63 @@ public class AssessmentManager_script : MonoBehaviour
 
         return false;
     }
+    public bool AreBothAssessmentsSubmitted()
+    {
+        if (!IsInitialized)
+            return false;
+
+        return managerResponses != null
+            && bossResponses != null
+            && managerResponses.isSubmitted
+            && bossResponses.isSubmitted;
+    }
+
+    private void ClassifyComparison(TopicComparisonResult comparison)
+    {
+        // Dimensión 1: alineación de percepción.
+
+
+        const float threshold = 0.4f;
+        const float tolerance = 0.0001f;
+
+        if (comparison.perceptionDifference < -threshold - tolerance)
+        {
+            comparison.perceptionAlignment = PerceptionAlignment.BossRatesHigher;
+        }
+        else if (comparison.perceptionDifference > threshold + tolerance)
+        {
+            comparison.perceptionAlignment = PerceptionAlignment.ManagerRatesHigher;
+        }
+        else
+        {
+            comparison.perceptionAlignment = PerceptionAlignment.Aligned;
+        }
+
+
+        // Dimensión 2: nivel requerido.
+        bool managerBelow = comparison.managerAverage < comparison.requiredLevel;
+
+        bool bossBelow = comparison.bossAverage < comparison.requiredLevel;
+
+        if (managerBelow && bossBelow)
+        {
+            comparison.requiredLevelStatus = RequiredLevelStatus.SharedOpportunity;
+        }
+        else if (managerBelow)
+        {
+            comparison.requiredLevelStatus = RequiredLevelStatus.ManagerOpportunity;
+        }
+        else if (bossBelow)
+        {
+            comparison.requiredLevelStatus = RequiredLevelStatus.BossOpportunity;
+        }
+        else
+        {
+            comparison.requiredLevelStatus = RequiredLevelStatus.BothMeetRequiredLevel;
+        }
+    }
+
+    //TEST PART
 
     [ContextMenu("Test Assessment Loading")]
     private void TestAssessmentLoading()
@@ -929,36 +1023,4 @@ public class AssessmentManager_script : MonoBehaviour
             Debug.LogError("PRUEBA FALLIDA: revisa los resultados.");
         }
     }
-
 }
-
-
-[System.Serializable]
-public class TopicAssessmentResult
-{
-    public string topicID;
-    public string topicTitle;
-    public float average;
-    public float requiredLevel;
-    public float difference;
-}
-
-
-[System.Serializable]
-public class TopicComparisonResult
-{
-    public string topicID;
-    public string topicTitle;
-
-    public float managerAverage;
-    public float bossAverage;
-    public float requiredLevel;
-
-    // Promedio menos nivel requerido.
-    public float managerDifference;
-    public float bossDifference;
-
-    // Autoevaluación menos evaluación del jefe.
-    public float perceptionDifference;
-}
-
