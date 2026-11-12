@@ -2,6 +2,8 @@
 using TMPro;
 using UnityEngine;
 using static AssessmentManager_script;
+using System;
+using UnityEngine.UI;
 
 public class CompetencyRowUI : MonoBehaviour
 {
@@ -17,6 +19,11 @@ public class CompetencyRowUI : MonoBehaviour
     [SerializeField] private TMP_Text requiredLevelStatusText;
 
     [SerializeField] private TMP_Text interpretationText;
+
+    [Header("Evidence Button")]
+    [SerializeField] private Button viewEvidenceButton;
+
+    public event Action<TopicComparisonResult> OnEvidenceRequested;
 
     public void Setup(TopicComparisonResult result)
     {
@@ -86,7 +93,15 @@ public class CompetencyRowUI : MonoBehaviour
                 break;
         }
 
+
         UpdateInterpretation(result);
+
+        viewEvidenceButton.onClick.RemoveAllListeners();
+
+        viewEvidenceButton.onClick.AddListener(() =>
+        {
+            OnEvidenceRequested?.Invoke(result);
+        });
     }
 
 

@@ -1,8 +1,10 @@
 
+using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
-using static AssessmentManager_script;
 using UnityEngine.UI;
+using static AssessmentManager_script;
 
 public class ComparisonUI : MonoBehaviour
 {
@@ -51,10 +53,33 @@ public class ComparisonUI : MonoBehaviour
 
     private const int itemsPerPage = 5;
 
+    [Header("Evidence Panel")]
+    [SerializeField] private GameObject evidencePanel;
+    [SerializeField] private TMP_Text evidenceCompetencyNameText;
 
+    [SerializeField] private TMP_Text evidenceAScoreText;
+    [SerializeField] private TMP_Text evidenceAText;
+
+    [SerializeField] private TMP_Text evidenceBScoreText;
+    [SerializeField] private TMP_Text evidenceBText;
+
+    [SerializeField] private Button closeEvidenceButton;
+
+    [Header("Competency Chart")]
+    [SerializeField] private Transform chartContentContainer;
+    [SerializeField] private GameObject competencyChartRowPrefab;
+
+    [Header("Chart Panel")]
+    [SerializeField] private GameObject chartPanel;
+    [SerializeField] private Button viewChartButton;
+    [SerializeField] private Button backToComparisonButton;
 
     private void Start()
     {
+        evidencePanel.SetActive(false);
+
+        closeEvidenceButton.onClick.AddListener(HideEvidence);
+
         if (comparisonPanel != null)
         {
             comparisonPanel.SetActive(false);
@@ -67,7 +92,14 @@ public class ComparisonUI : MonoBehaviour
 
         previousButton.onClick.AddListener(PreviousPage);
         nextButton.onClick.AddListener(NextPage);
+
+        viewChartButton.onClick.AddListener(ShowChart);
+        backToComparisonButton.onClick.AddListener(HideChart);
+
+        chartPanel.SetActive(false);
     }
+
+
 
     public void ShowComparison()
     {
@@ -89,6 +121,7 @@ public class ComparisonUI : MonoBehaviour
         statusText.text = "Comparación disponible. Competencias analizadas: " + comparisons.Count;
 
         currentComparisons = comparisons;
+        GenerateChartRows(currentComparisons);
 
         UpdateGlobalSummary(comparisons);
 
@@ -142,6 +175,7 @@ public class ComparisonUI : MonoBehaviour
             }
 
             rowUI.Setup(result);
+            rowUI.OnEvidenceRequested += ShowEvidence;
         }
 
         Debug.Log("ComparisonUI: filas generadas: " + comparisons.Count);
@@ -321,6 +355,123 @@ public class ComparisonUI : MonoBehaviour
         }
     }
 
+    private void ShowEvidence(TopicComparisonResult result)
+    {
+        if (result == null)
+            return;
+
+        var selectedTopic = assessmentManager.assessmentData.topics
+            .Find(topic => topic.id == result.topicID);
+
+        if (selectedTopic == null)
+        {
+            Debug.LogError("ComparisonUI: no se encontró la competencia.");
+            return;
+        }
+
+        evidenceCompetencyNameText.text = result.topicTitle;
+
+        evidenceAScoreText.text =
+            "Promedio: " + result.managerAverage.ToString("F1") + " / 5";
+
+        evidenceBScoreText.text =
+            "Promedio: " + result.bossAverage.ToString("F1") + " / 5";
+
+        evidenceAText.text = BuildEvidenceText(
+            selectedTopic.question,
+            assessmentManager.managerResponses.responses
+        );
+
+        evidenceBText.text = BuildEvidenceText(
+            selectedTopic.question,
+            assessmentManager.bossResponses.responses
+        );
+
+        comparisonPanel.SetActive(false);
+        evidencePanel.SetActive(true);
+    }
+
+    private void HideEvidence()
+    {
+        evidencePanel.SetActive(false);
+        comparisonPanel.SetActive(true);
+    }
+
+    private string BuildEvidenceText(
+    System.Collections.Generic.List<AssesmentQuestion> questions,
+    System.Collections.Generic.List<QuestionResponses> responses)
+    {
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < questions.Count; i++)
+        {
+            var question = questions[i];
+
+            var response = responses.Find(
+                r => r.questionID == question.id
+            );
+
+            builder.AppendLine("Pregunta " + (i + 1));
+            builder.AppendLine(question.text);
+
+            if (response != null)
+            {
+                builder.AppendLine("Puntuación: " + response.score + " / 5");
+
+                builder.AppendLine(
+                    "Evidencia: " +
+                    (string.IsNullOrWhiteSpace(response.evidence)
+                        ? "Sin evidencia registrada."
+                        : response.evidence)
+                );
+            }
+            else
+            {
+                builder.AppendLine("Sin respuesta registrada.");
+            }
+
+            builder.AppendLine();
+        }
+
+        return builder.ToString();
+    }
+
+
+    private void GenerateChartRows( List<TopicComparisonResult> comparisons)
+    {
+        if (chartContentContainer == null || competencyChartRowPrefab == null)
+        {
+            Debug.LogError( "ComparisonUI: faltan referencias de la gráfica.");
+            return;
+        }
+
+        // Limpiar filas anteriores.
+        foreach (Transform child in chartContentContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Crear una fila por competencia.
+        foreach (TopicComparisonResult result in comparisons)
+        {
+            GameObject rowObject = Instantiate(  competencyChartRowPrefab, chartContentContainer);
+
+            CompetencyChartRowUI rowUI = rowObject.GetComponent<CompetencyChartRowUI>();
+
+            if (rowUI == null)
+            {
+                Debug.LogError( "ComparisonUI: el prefab no tiene CompetencyChartRowUI." );
+                continue;
+            }
+
+            rowUI.Setup(result);
+        }
+
+        Debug.Log("ComparisonUI: filas gráficas generadas: " + comparisons.Count );
+    }
+
+
+    //BOTONES
 
     private void PreviousPage()
     {
@@ -363,5 +514,17 @@ public class ComparisonUI : MonoBehaviour
         currentPage = 0;
 
         RefreshCompetencyList();
+    }
+
+    private void ShowChart()
+    {
+        comparisonPanel.SetActive(false);
+        chartPanel.SetActive(true);
+    }
+
+    private void HideChart()
+    {
+        chartPanel.SetActive(false);
+        comparisonPanel.SetActive(true);
     }
 }
