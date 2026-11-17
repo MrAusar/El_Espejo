@@ -1030,7 +1030,7 @@ RectTransform:
   m_Father: {fileID: 1579872065}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4682,6 +4682,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 686709191}
   m_CullTransparentMesh: 1
+--- !u!1 &693669326
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 693669327}
+  - component: {fileID: 693669328}
+  m_Layer: 0
+  m_Name: ReflectionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &693669327
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 693669326}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &693669328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 693669326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 342e00e35cc69e94fa98b6bcd083b16f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReflectionManager
+  planManager: {fileID: 795257994}
+  questionData:
+    questions:
+    - questionID: TEST_01
+      topicID: P01
+      reflectionStage: Conciencia
+      questionText: "\xBFC\xF3mo describir\xEDas tu desempe\xF1o actual en esta competencia?"
+      requiredLevelStatuses: []
+      perceptionAlignments: []
+      isActive: 1
+    - questionID: TEST_02
+      topicID: P01
+      reflectionStage: Conciencia
+      questionText: "\xBFQu\xE9 aspecto de esta competencia te gustar\xEDa mejorar?"
+      requiredLevelStatuses: []
+      perceptionAlignments: []
+      isActive: 1
+  testTopicID: P01
+  testReflectionStage: Conciencia
 --- !u!1 &720782917
 GameObject:
   m_ObjectHideFlags: 0
@@ -4918,6 +4981,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 748362405}
   m_CullTransparentMesh: 1
+--- !u!1 &795257993
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 795257995}
+  - component: {fileID: 795257994}
+  m_Layer: 0
+  m_Name: PersonalDevelopmentPlanManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &795257994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795257993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffeec2c9637334d4ba7deaa5851b6d07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersonalDevelopmentPlanManager
+  assessmentManager: {fileID: 2109798399}
+--- !u!4 &795257995
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 795257993}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &811126023
 GameObject:
   m_ObjectHideFlags: 0
@@ -15324,5 +15432,7 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 2109798398}
+  - {fileID: 795257995}
+  - {fileID: 693669327}
   - {fileID: 1193659927}
   - {fileID: 1784850422}
