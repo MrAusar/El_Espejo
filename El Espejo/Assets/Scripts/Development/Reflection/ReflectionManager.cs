@@ -385,6 +385,93 @@ public class ReflectionManager : MonoBehaviour
         return false;
     }
 
+    public bool TryGetCurrentStageProgress(
+    out int questionNumber,
+    out int totalQuestions)
+    {
+        questionNumber = 0;
+        totalQuestions = 0;
+
+        if (currentQuestions == null ||
+            currentQuestions.Count == 0 ||
+            currentQuestionIndex < 0 ||
+            currentQuestionIndex >= currentQuestions.Count)
+        {
+            return false;
+        }
+
+        List<ReflectionQuestion> allQuestions =
+            GetQuestionsForTopic(
+                currentTopicID,
+                currentReflectionStage
+            );
+
+        totalQuestions = allQuestions.Count;
+
+        int previouslyAnswered =
+            totalQuestions - currentQuestions.Count;
+
+        questionNumber =
+            previouslyAnswered + currentQuestionIndex + 1;
+
+        return totalQuestions > 0;
+    }
+
+    public bool IsTopicReflectionCompleted(string topicID)
+    {
+        if (string.IsNullOrWhiteSpace(topicID))
+            return false;
+
+        ReflectionStage[] stages = (ReflectionStage[])Enum.GetValues(typeof(ReflectionStage));
+
+        foreach (ReflectionStage stage in stages)
+        {
+            string stageName = stage.ToString();
+
+            if (!HasQuestionsForStage(topicID, stageName))
+            {
+                return false;
+            }
+
+            if (!IsStageCompleted(topicID, stageName))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void DiagnoseTopicReflectionCompletion(string topicID)
+    {
+        Debug.Log($"=== DIAGNÓSTICO REFLEXIÓN: {topicID} ===");
+
+        ReflectionStage[] stages = (ReflectionStage[])Enum.GetValues(typeof(ReflectionStage));
+
+        foreach (ReflectionStage stage in stages)
+        {
+            string stageName = stage.ToString();
+
+            List<ReflectionQuestion> available = GetQuestionsForTopic(topicID, stageName);
+
+            List<ReflectionQuestion> pending = GetPendingQuestionsForTopic(topicID, stageName);
+
+            Debug.Log(
+                $"Etapa: {stageName} | " +
+                $"Configuradas: {available.Count} | " +
+                $"Pendientes: {pending.Count} | " +
+                $"Completada: {IsStageCompleted(topicID, stageName)}"
+            );
+
+            foreach (ReflectionQuestion question in pending)
+            {
+                Debug.LogWarning($"Pregunta pendiente: {question.questionID}");
+            }
+        }
+
+        Debug.Log($"REFLEXIÓN COMPLETA: " + IsTopicReflectionCompleted(topicID));
+    }
+
     //PRUEBAS
     [ContextMenu("Test / Resume Reflection Stages")]
     private void TestResumeReflectionStages()
