@@ -47,6 +47,13 @@ public class DevelopmentNavigationUI : MonoBehaviour
     [Header("Interpretation")]
     [SerializeField]
     private InterpretationUIController interpretationUI;
+
+    [Header("Behavior")]
+    [SerializeField]
+    private BehaviorUIController behaviorUI;
+
+    [SerializeField]
+    private GameObject behaviorPanel;
     private void Awake()
     {
         refreshButton.onClick.AddListener(RefreshTopics);
@@ -60,6 +67,11 @@ public class DevelopmentNavigationUI : MonoBehaviour
         if (interpretationUI != null)
         {
             interpretationUI.OnInterpretationCompleted += HandleInterpretationCompleted;
+        }
+
+        if (behaviorUI != null)
+        {
+            behaviorUI.OnBehaviorCompleted += HandleBehaviorCompleted;
         }
     }
     
@@ -83,8 +95,7 @@ public class DevelopmentNavigationUI : MonoBehaviour
 
         List<string> labels = new List<string>();
 
-        foreach (DevelopmentTopicSummary topic
-            in planManager.CurrentPlan.topicResults)
+        foreach (DevelopmentTopicSummary topic in planManager.CurrentPlan.topicResults)
         {
             topicIDs.Add(topic.topicID);
 
@@ -131,6 +142,8 @@ public class DevelopmentNavigationUI : MonoBehaviour
         interpretationPanel.SetActive(false);
 
         navigationPanel.SetActive(true);
+
+        behaviorPanel.SetActive(false);
     }
 
 
@@ -145,6 +158,11 @@ public class DevelopmentNavigationUI : MonoBehaviour
         if (interpretationUI != null)
         {
             interpretationUI.OnInterpretationCompleted -= HandleInterpretationCompleted;
+        }
+
+        if (behaviorUI != null)
+        {
+            behaviorUI.OnBehaviorCompleted -= HandleBehaviorCompleted;
         }
     }
 
@@ -187,10 +205,31 @@ public class DevelopmentNavigationUI : MonoBehaviour
 
     private void HandleInterpretationCompleted(string topicID)
     {
-        Debug.Log( $"Interpretación completada: {topicID}" );
+        if (behaviorUI == null)
+        {
+            Debug.LogWarning("BehaviorUIController no asignado.");
+            return;
+        }
 
+        bool opened = behaviorUI.OpenTopic(topicID);
+
+        if (!opened)
+        {
+            Debug.LogWarning($"No se pudo abrir Comportamiento para {topicID}.");
+            return;
+        }
+
+        interpretationPanel.SetActive(false);
+        navigationPanel.SetActive(false);
+
+        Debug.Log($"Interpretación completada. " + $"Iniciando Comportamiento: {topicID}");
+    }
+
+    private void HandleBehaviorCompleted(string topicID)
+    {
         ReturnToNavigation();
 
-        feedbackText.text = $"Interpretación de {topicID} completada correctamente.";
+        feedbackText.text =
+            $"Comportamiento de {topicID} completado correctamente.";
     }
 }
