@@ -2298,7 +2298,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &161935599
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12474,6 +12474,9 @@ MonoBehaviour:
   interpretationUI: {fileID: 852754579}
   behaviorUI: {fileID: 986573577}
   behaviorPanel: {fileID: 569826714}
+  prioritizationUI: {fileID: 1578573022}
+  prioritizationPanel: {fileID: 924462359}
+  openPrioritizationButton: {fileID: 1189061149}
 --- !u!4 &917719408
 Transform:
   m_ObjectHideFlags: 0
@@ -13801,6 +13804,8 @@ Transform:
   - {fileID: 1678585670}
   - {fileID: 986573576}
   - {fileID: 1387060674}
+  - {fileID: 1578573021}
+  - {fileID: 2033587234}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1007562218
@@ -17051,7 +17056,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1231268517}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 917719407}
+        m_TargetAssemblyTypeName: DevelopmentNavigationUI, Assembly-CSharp
+        m_MethodName: ReturnToNavigation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1231268517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21393,6 +21410,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577106073}
   m_CullTransparentMesh: 1
+--- !u!1 &1578573020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1578573021}
+  - component: {fileID: 1578573022}
+  m_Layer: 0
+  m_Name: PrioritizationUIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1578573021
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578573020}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1004816479}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1578573022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578573020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e804050080280547a2c2e7fab2f3699, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PrioritizationUIController
+  prioritizationManager: {fileID: 1387060675}
+  prioritizationPanel: {fileID: 924462359}
+  topicsContent: {fileID: 1408145035}
+  topicPrefab: {fileID: 7586255430185351503, guid: 95d63db27efe46a45b551a616e7e5a4d, type: 3}
+  selectedCountText: {fileID: 1851351730}
+  feedbackText: {fileID: 1235548106}
+  confirmButton: {fileID: 496446214}
 --- !u!1 &1579872064
 GameObject:
   m_ObjectHideFlags: 0
@@ -27580,7 +27648,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1990257181
 RectTransform:
   m_ObjectHideFlags: 0
@@ -27964,6 +28032,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2026666839}
   m_CullTransparentMesh: 1
+--- !u!1 &2033587233
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2033587234}
+  - component: {fileID: 2033587235}
+  m_Layer: 0
+  m_Name: DevelopmkentChallengeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2033587234
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033587233}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1004816479}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2033587235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033587233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bd6889e5e21a3f4fad086a385bc9c5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DevelopmentChallengeManager
+  planManager: {fileID: 795257994}
+  prioritizationManager: {fileID: 1387060675}
+  templateData:
+    templates: []
 --- !u!1 &2048617130
 GameObject:
   m_ObjectHideFlags: 0

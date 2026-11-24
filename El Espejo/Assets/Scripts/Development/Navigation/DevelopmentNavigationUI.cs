@@ -54,10 +54,33 @@ public class DevelopmentNavigationUI : MonoBehaviour
 
     [SerializeField]
     private GameObject behaviorPanel;
+
+    [Header("Prioritization")]
+    [SerializeField]
+    private PrioritizationUIController prioritizationUI;
+
+    [SerializeField]
+    private GameObject prioritizationPanel;
+
+    [SerializeField]
+    private Button openPrioritizationButton;
     private void Awake()
     {
         refreshButton.onClick.AddListener(RefreshTopics);
         openButton.onClick.AddListener(OpenSelectedTopic);
+
+        if (openPrioritizationButton != null)
+        {
+            openPrioritizationButton.onClick.AddListener(
+                OpenPrioritization
+            );
+        }
+
+        if (prioritizationUI != null)
+        {
+            prioritizationUI.OnPrioritiesConfirmed +=
+                HandlePrioritiesConfirmed;
+        }
     }
 
     private void Start()
@@ -144,6 +167,11 @@ public class DevelopmentNavigationUI : MonoBehaviour
         navigationPanel.SetActive(true);
 
         behaviorPanel.SetActive(false);
+
+        if (prioritizationPanel != null)
+        {
+            prioritizationPanel.SetActive(false);
+        }
     }
 
 
@@ -163,6 +191,19 @@ public class DevelopmentNavigationUI : MonoBehaviour
         if (behaviorUI != null)
         {
             behaviorUI.OnBehaviorCompleted -= HandleBehaviorCompleted;
+        }
+
+        if (openPrioritizationButton != null)
+        {
+            openPrioritizationButton.onClick.RemoveListener(
+                OpenPrioritization
+            );
+        }
+
+        if (prioritizationUI != null)
+        {
+            prioritizationUI.OnPrioritiesConfirmed -=
+                HandlePrioritiesConfirmed;
         }
     }
 
@@ -231,5 +272,30 @@ public class DevelopmentNavigationUI : MonoBehaviour
 
         feedbackText.text =
             $"Comportamiento de {topicID} completado correctamente.";
+    }
+
+    private void OpenPrioritization()
+    {
+        if (prioritizationUI == null)
+            return;
+
+        bool opened =
+            prioritizationUI.OpenPrioritization();
+
+        if (!opened)
+        {
+            feedbackText.text =
+                "No se pudieron cargar las competencias.";
+            return;
+        }
+
+        navigationPanel.SetActive(false);
+    }
+    private void HandlePrioritiesConfirmed()
+    {
+        ReturnToNavigation();
+
+        feedbackText.text =
+            "Prioridades de desarrollo confirmadas.";
     }
 }
