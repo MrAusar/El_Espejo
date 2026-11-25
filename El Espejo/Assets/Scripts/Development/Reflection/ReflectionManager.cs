@@ -144,8 +144,7 @@ public class ReflectionManager : MonoBehaviour
         }
 
         ReflectionResponse existingResponse =
-            planManager.CurrentPlan.reflectionData.responses.Find(
-                response =>
+            planManager.CurrentPlan.reflectionData.responses.Find(response =>
                     response.questionID == currentQuestion.questionID &&
                     response.topicID == currentTopicID &&
                     response.reflectionStage == currentReflectionStage
@@ -168,7 +167,22 @@ public class ReflectionManager : MonoBehaviour
             planManager.CurrentPlan.reflectionData.responses.Add(newResponse);
         }
 
-        Debug.Log("Respuesta guardada: " + currentQuestion.questionID);
+        // La respuesta ya fue registrada en CurrentPlan.
+        Debug.Log("Respuesta registrada: " + currentQuestion.questionID);
+
+        // Guardar el PPD actualizado en disco.
+        bool saved = planManager.SaveCurrentPlan();
+
+        if (!saved)
+        {
+            Debug.LogWarning(
+                "La reflexión se registró en memoria, " +
+                "pero no se pudo guardar en disco.");
+
+            return false;
+        }
+
+        Debug.Log( "Reflexión guardada automáticamente: " + currentQuestion.questionID);
 
         return true;
     }

@@ -12,13 +12,15 @@ public class PersonalDevelopmentPlanManager : MonoBehaviour
     {
         planBuilder = new DevelopmentPlanBuilder();
         CreateNewPlan();
+
+        TryLoadSavedPlan();
     }
 
     public void CreateNewPlan()
     {
         CurrentPlan = new PersonalDevelopmentPlanData();
 
-        CurrentPlan.assessmentID = System.Guid.NewGuid().ToString();
+        CurrentPlan.assessmentID = GetLocalAssessmentID();
 
         CurrentPlan.reflectionData = new ReflectionData
         {
@@ -59,33 +61,56 @@ public class PersonalDevelopmentPlanManager : MonoBehaviour
         return planBuilder.TryBuildAssessmentSummary(assessmentManager, CurrentPlan);
     }
 
+    private const string LocalAssessmentIDKey = "EspejoGerente_CurrentAssessmentID";
 
-//PRUEBAS
-
-    [ContextMenu("Test / Build Assessment Summary")]
-    private void TestBuildAssessmentSummary()
+    private string GetLocalAssessmentID()
     {
-        bool success = BuildAssessmentSummary();
+        string assessmentID = PlayerPrefs.GetString(LocalAssessmentIDKey, "");
 
-        if (!success)
+        if (string.IsNullOrWhiteSpace(assessmentID))
         {
-            Debug.LogWarning("No se pudo generar el resumen.");
-            return;
+            assessmentID = System.Guid.NewGuid().ToString();
+
+            PlayerPrefs.SetString(LocalAssessmentIDKey, assessmentID);
+
+            PlayerPrefs.Save();
         }
 
-        Debug.Log(
-            "Competencias guardadas en el plan: " + CurrentPlan.topicResults.Count);
-
-        foreach (DevelopmentTopicSummary topic
-                 in CurrentPlan.topicResults)
-        {
-            Debug.Log(
-                topic.topicTitle
-                + " | Gerente: " + topic.managerAverage
-                + " | Jefe: " + topic.bossAverage
-                + " | Requerido: " + topic.requiredLevel
-            );
-        }
+        return assessmentID;
     }
 
+    public bool TryLoadSavedPlan()
+    {
+        string assessmentID = GetLocalAssessmentID();
+
+        PersonalDevelopmentPlanData savedPlan =
+            PersonalDevelopmentPlanStorage.Load(assessmentID);
+
+        if (savedPlan == null)
+        {
+            Debug.Log("No existe un PPD guardado todavía.");
+            return false;
+        }
+
+        CurrentPlan = savedPlan;
+
+        Debug.Log("PPD recuperado correctamente.");
+
+        return true;
+    }
+    public bool SaveCurrentPlan()
+    {
+        if (CurrentPlan == null)
+        {
+            Debug.LogWarning(
+                "No existe un PPD para guardar."
+            );
+
+            return false;
+        }
+
+        return PersonalDevelopmentPlanStorage.Save(
+            CurrentPlan
+        );
+    }
 }

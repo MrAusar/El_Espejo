@@ -72,11 +72,11 @@ public class BehaviorManager : MonoBehaviour
     }
 
     public bool SaveBehaviorResponse(
-    string topicID,
-    string questionID,
-    int frequencyScore,
-    string selectedOptionID,
-    string writtenResponse = "")
+        string topicID,
+        string questionID,
+        int frequencyScore,
+        string selectedOptionID,
+        string writtenResponse = "")
     {
         if (planManager == null ||
             planManager.CurrentPlan == null ||
@@ -140,6 +140,23 @@ public class BehaviorManager : MonoBehaviour
                 : selectedOptionID;
 
         response.writtenResponse = writtenResponse?.Trim() ?? "";
+
+        bool saved = planManager.SaveCurrentPlan();
+
+        if (!saved)
+        {
+            Debug.LogWarning(
+                "La respuesta de comportamiento se registró " +
+                "en memoria, pero no se pudo guardar en disco."
+            );
+
+            return false;
+        }
+
+        Debug.Log(
+            $"Comportamiento guardado automáticamente: " +
+            $"{topicID} - {questionID}"
+        );
 
         return true;
     }

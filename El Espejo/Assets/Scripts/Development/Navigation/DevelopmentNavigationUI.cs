@@ -64,6 +64,18 @@ public class DevelopmentNavigationUI : MonoBehaviour
 
     [SerializeField]
     private Button openPrioritizationButton;
+
+    [Header("Personal Development Plan")]
+    [SerializeField]
+    private PersonalDevelopmentPlanUIController personalPlanUI;
+
+    [SerializeField]
+    private GameObject personalPlanPanel;
+
+    [SerializeField]
+    private Button openPersonalPlanButton;
+
+
     private void Awake()
     {
         refreshButton.onClick.AddListener(RefreshTopics);
@@ -71,15 +83,17 @@ public class DevelopmentNavigationUI : MonoBehaviour
 
         if (openPrioritizationButton != null)
         {
-            openPrioritizationButton.onClick.AddListener(
-                OpenPrioritization
-            );
+            openPrioritizationButton.onClick.AddListener( OpenPrioritization);
         }
 
         if (prioritizationUI != null)
         {
-            prioritizationUI.OnPrioritiesConfirmed +=
-                HandlePrioritiesConfirmed;
+            prioritizationUI.OnPrioritiesConfirmed += HandlePrioritiesConfirmed;
+        }
+
+        if (openPersonalPlanButton != null)
+        {
+            openPersonalPlanButton.onClick.AddListener( OpenPersonalPlan);
         }
     }
 
@@ -109,8 +123,7 @@ public class DevelopmentNavigationUI : MonoBehaviour
         if (planManager.CurrentPlan == null ||
             planManager.CurrentPlan.topicResults == null)
         {
-            feedbackText.text =
-                "No se encontraron resultados disponibles.";
+            feedbackText.text = "No se encontraron resultados disponibles.";
 
             openButton.interactable = false;
             return;
@@ -122,9 +135,7 @@ public class DevelopmentNavigationUI : MonoBehaviour
         {
             topicIDs.Add(topic.topicID);
 
-            labels.Add(
-                $"{topic.topicID} - {topic.topicTitle}"
-            );
+            labels.Add( $"{topic.topicID} - {topic.topicTitle}");
         }
 
         topicDropdown.AddOptions(labels);
@@ -148,9 +159,7 @@ public class DevelopmentNavigationUI : MonoBehaviour
 
         if (!opened)
         {
-            feedbackText.text =
-                $"No se pudo abrir {topicID}. " +
-                "Revisa la consola.";
+            feedbackText.text = $"No se pudo abrir {topicID}. " + "Revisa la consola.";
             return;
         }
 
@@ -171,6 +180,11 @@ public class DevelopmentNavigationUI : MonoBehaviour
         if (prioritizationPanel != null)
         {
             prioritizationPanel.SetActive(false);
+        }
+
+        if (personalPlanPanel != null)
+        {
+            personalPlanPanel.SetActive(false);
         }
     }
 
@@ -195,15 +209,17 @@ public class DevelopmentNavigationUI : MonoBehaviour
 
         if (openPrioritizationButton != null)
         {
-            openPrioritizationButton.onClick.RemoveListener(
-                OpenPrioritization
-            );
+            openPrioritizationButton.onClick.RemoveListener( OpenPrioritization);
         }
 
         if (prioritizationUI != null)
         {
-            prioritizationUI.OnPrioritiesConfirmed -=
-                HandlePrioritiesConfirmed;
+            prioritizationUI.OnPrioritiesConfirmed -= HandlePrioritiesConfirmed;
+        }
+
+        if (openPersonalPlanButton != null)
+        {
+            openPersonalPlanButton.onClick.RemoveListener( OpenPersonalPlan);
         }
     }
 
@@ -270,8 +286,7 @@ public class DevelopmentNavigationUI : MonoBehaviour
     {
         ReturnToNavigation();
 
-        feedbackText.text =
-            $"Comportamiento de {topicID} completado correctamente.";
+        feedbackText.text = $"Comportamiento de {topicID} completado correctamente.";
     }
 
     private void OpenPrioritization()
@@ -279,23 +294,54 @@ public class DevelopmentNavigationUI : MonoBehaviour
         if (prioritizationUI == null)
             return;
 
-        bool opened =
-            prioritizationUI.OpenPrioritization();
+        bool opened = prioritizationUI.OpenPrioritization();
 
         if (!opened)
         {
-            feedbackText.text =
-                "No se pudieron cargar las competencias.";
+            feedbackText.text = "No se pudieron cargar las competencias.";
             return;
         }
 
         navigationPanel.SetActive(false);
     }
+
     private void HandlePrioritiesConfirmed()
     {
+        if (planManager == null)
+        {
+            Debug.LogWarning("PersonalDevelopmentPlanManager no asignado.");
+            return;
+        }
+
+        bool saved = planManager.SaveCurrentPlan();
+
+        if (!saved)
+        {
+            feedbackText.text ="No se pudieron guardar las prioridades.";
+            return;
+        }
+
         ReturnToNavigation();
 
-        feedbackText.text =
-            "Prioridades de desarrollo confirmadas.";
+        feedbackText.text = "Prioridades guardadas correctamente.";
+    }
+
+    private void OpenPersonalPlan()
+    {
+        if (personalPlanUI == null)
+        {
+            Debug.LogWarning( "PersonalDevelopmentPlanUIController no asignado.");
+            return;
+        }
+
+        bool opened = personalPlanUI.OpenPlan();
+
+        if (!opened)
+        {
+            feedbackText.text ="No se pudo abrir el Plan Personal de Desarrollo.";
+            return;
+        }
+
+        navigationPanel.SetActive(false);
     }
 }

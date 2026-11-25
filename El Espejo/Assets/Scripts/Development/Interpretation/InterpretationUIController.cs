@@ -49,6 +49,10 @@ public class InterpretationUIController : MonoBehaviour
 
     public event System.Action<string> OnInterpretationCompleted;
 
+    [Header("Persistence")]
+    [SerializeField]
+    private PersonalDevelopmentPlanManager planManager;
+
     [ContextMenu("Test / Show Interpretation")]
     private void TestShowInterpretation()
     {
@@ -258,19 +262,16 @@ public class InterpretationUIController : MonoBehaviour
             }
         }
 
-        customExplanationInput.gameObject.SetActive(
-            requiresExplanation
-        );
+        customExplanationInput.gameObject.SetActive( requiresExplanation);
 
         string savedText =
             requiresExplanation && interpretation != null
                 ? interpretation.customExplanation
                 : "";
 
-        customExplanationInput.SetTextWithoutNotify(
-            savedText ?? ""
-        );
+        customExplanationInput.SetTextWithoutNotify(savedText ?? "");
     }
+
 
     private void OnSaveInterpretationClicked()
     {
@@ -282,23 +283,47 @@ public class InterpretationUIController : MonoBehaviour
             return;
         }
 
-        bool isCompleted = interpretationManager.IsTopicInterpretationCompleted(currentTopicID);
+        // 1. Comprobar que la interpretación esté completa.
+        bool isCompleted =
+            interpretationManager.IsTopicInterpretationCompleted( currentTopicID);
 
         if (!isCompleted)
         {
-            feedbackText.text =
-                "Selecciona al menos una explicación válida. " +
-                "Si elegiste 'Otra explicación', escribe tu respuesta.";
+            feedbackText.text = "Selecciona al menos una explicación válida. " + "Si elegiste 'Otra explicación', escribe tu respuesta.";
 
             Debug.LogWarning( $"Interpretación incompleta: {currentTopicID}" );
 
             return;
         }
 
+        // 2. Verificar la referencia al PPD.
+        if (planManager == null)
+        {
+            feedbackText.text =  "No se encontró el administrador del plan.";
+
+            Debug.LogWarning( "PersonalDevelopmentPlanManager no asignado." );
+
+            return;
+        }
+
+        // 3. Guardar las respuestas en el archivo JSON.
+        bool saved = planManager.SaveCurrentPlan();
+
+        if (!saved)
+        {
+            feedbackText.text = "No se pudo guardar la interpretación. " + "Inténtalo nuevamente.";
+
+            Debug.LogWarning($"Error al guardar interpretación: {currentTopicID}");
+
+            return;
+        }
+
+        // 4. Confirmar el guardado.
         feedbackText.text = "¡Interpretación guardada correctamente!";
 
-        OnInterpretationCompleted?.Invoke(currentTopicID);
+        Debug.Log( $"Interpretación guardada automáticamente: {currentTopicID}");
 
-        Debug.Log($"Interpretación completada: {currentTopicID}");
+        // 5. Continuar hacia Comportamiento.
+        OnInterpretationCompleted?.Invoke(currentTopicID);
     }
 }
